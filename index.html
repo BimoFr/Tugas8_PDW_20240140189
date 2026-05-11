@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VELORA PERFUME - Parfum Mewah Modern</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .title-font {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .glassmorphism {
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .glow-gold {
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .video-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease-out;
+    }
+
+    .loading-screen.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .carousel {
+      overflow: hidden;
+    }
+
+    .carousel-inner {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+
+    .carousel-item {
+      min-width: 100%;
+      flex-shrink: 0;
+    }
+
+    .cart-modal-open #cartSidebar {
+      transform: translateX(0);
+    }
+
+    .checkout-modal-open #checkoutContent {
+      transform: scale-100;
+      opacity: 1;
+    }
+
+    .success-modal-open #successContent {
+      transform: scale-100;
+      opacity: 1;
+    }
+
+    .quantity-btn {
+      @apply bg-zinc-700 hover:bg-zinc-600 text-white px-3 py-1 rounded-lg transition-colors duration-200;
+    }
+
+    .cart-item {
+      @apply flex items-center gap-4 p-4 bg-zinc-800 rounded-xl;
+    }
+
+    .cart-item img {
+      @apply w-16 h-16 object-cover rounded-lg;
+    }
+  </style>
+</head>
+
+<body class="bg-black text-white overflow-x-hidden">
+
+  <!-- LOADING SCREEN -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+      <p class="text-yellow-400 text-lg font-semibold">Memuat VELORA...</p>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="fixed top-0 w-full z-50 glassmorphism border-b border-zinc-800/50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <h1 class="title-font text-2xl font-bold text-yellow-400 tracking-wide glow-gold">
+        <i class="fas fa-crown mr-2"></i>VELORA
+      </h1>
+
+      <ul class="hidden md:flex gap-8 text-sm font-medium">
+        <li><a href="#home" class="hover:text-yellow-400 duration-300 transition-colors">Beranda</a></li>
+        <li><a href="#collection" class="hover:text-yellow-400 duration-300 transition-colors">Koleksi</a></li>
+        <li><a href="#bestseller" class="hover:text-yellow-400 duration-300 transition-colors">Terlaris</a></li>
+        <li><a href="#review" class="hover:text-yellow-400 duration-300 transition-colors">Ulasan</a></li>
+        <li><a href="#contact" class="hover:text-yellow-400 duration-300 transition-colors">Kontak</a></li>
+      </ul>
+
+      <div class="flex items-center gap-4">
+        <!-- CART BUTTON -->
+        <button id="cartBtn" class="relative bg-yellow-400 text-black p-3 rounded-full hover:scale-110 hover:glow-gold duration-300 transition-all">
+          <i class="fas fa-shopping-cart text-lg"></i>
+          <span id="cartCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">0</span>
+        </button>
+
+        <button id="darkBtn" class="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all">
+          <i class="fas fa-moon mr-2"></i>Mode Gelap
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CART MODAL -->
+  <div id="cartModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="cartOverlay"></div>
+    <div class="relative max-w-md w-full h-full bg-zinc-900 ml-auto transform translate-x-full transition-transform duration-500 ease-out" id="cartSidebar">
+      <!-- CART HEADER -->
+      <div class="flex items-center justify-between p-6 border-b border-zinc-700">
+        <h3 class="title-font text-xl font-bold text-yellow-400">
+          <i class="fas fa-shopping-cart mr-2"></i>Keranjang Belanja
+        </h3>
+        <button id="closeCart" class="text-zinc-400 hover:text-white transition-colors">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <!-- CART ITEMS -->
+      <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-4">
+        <!-- Cart items will be added here dynamically -->
+        <div class="text-center text-zinc-500 py-12">
+          <i class="fas fa-shopping-cart text-4xl mb-4"></i>
+          <p>Keranjang kosong</p>
+          <p class="text-sm">Tambahkan produk ke keranjang</p>
+        </div>
+      </div>
+
+      <!-- CART FOOTER -->
+      <div class="border-t border-zinc-700 p-6">
+        <div class="flex justify-between items-center mb-6">
+          <span class="text-lg font-semibold">Total:</span>
+          <span id="cartTotal" class="text-2xl font-bold text-yellow-400">$0</span>
+        </div>
+
+        <button id="checkoutBtn" class="w-full bg-yellow-400 text-black py-4 rounded-xl font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          <i class="fas fa-credit-card mr-2"></i>Checkout Sekarang
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="checkoutOverlay"></div>
+    <div class="relative max-w-2xl w-full max-h-[90vh] overflow-y-auto bg-zinc-900 mx-4 my-8 rounded-3xl transform scale-95 opacity-0 transition-all duration-300" id="checkoutContent">
+      <!-- CHECKOUT HEADER -->
+      <div class="flex items-center justify-between p-8 border-b border-zinc-700">
+        <h3 class="title-font text-2xl font-bold text-yellow-400">
+          <i class="fas fa-credit-card mr-2"></i>Checkout
+        </h3>
+        <button id="closeCheckout" class="text-zinc-400 hover:text-white transition-colors">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <div class="p-8">
+        <div class="grid lg:grid-cols-2 gap-8">
+          <!-- CHECKOUT FORM -->
+          <div>
+            <h4 class="text-lg font-semibold mb-6">Informasi Pengiriman</h4>
+            <form id="checkoutForm" class="space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-2">
+                  <i class="fas fa-user mr-2"></i>Nama Lengkap
+                </label>
+                <input type="text" id="checkoutName" required class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:glow-gold transition-all">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-2">
+                  <i class="fas fa-map-marker-alt mr-2"></i>Alamat Lengkap
+                </label>
+                <textarea id="checkoutAddress" rows="3" required class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:glow-gold transition-all resize-none"></textarea>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-2">
+                  <i class="fas fa-phone mr-2"></i>Nomor Telepon
+                </label>
+                <input type="tel" id="checkoutPhone" required class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:glow-gold transition-all">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-2">
+                  <i class="fas fa-credit-card mr-2"></i>Metode Pembayaran
+                </label>
+                <select id="checkoutPayment" required class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-yellow-400 focus:glow-gold transition-all">
+                  <option value="">Pilih Metode Pembayaran</option>
+                  <option value="transfer">Transfer Bank</option>
+                  <option value="cod">Bayar di Tempat (COD)</option>
+                  <option value="ewallet">E-Wallet</option>
+                  <option value="credit">Kartu Kredit</option>
+                </select>
+              </div>
+            </form>
+          </div>
+
+          <!-- ORDER SUMMARY -->
+          <div>
+            <h4 class="text-lg font-semibold mb-6">Ringkasan Pesanan</h4>
+            <div id="orderSummary" class="space-y-4 mb-6">
+              <!-- Order items will be added here -->
+            </div>
+
+            <div class="border-t border-zinc-700 pt-4">
+              <div class="flex justify-between items-center text-lg font-semibold">
+                <span>Total Pembayaran:</span>
+                <span id="orderTotal" class="text-2xl text-yellow-400">$0</span>
+              </div>
+            </div>
+
+            <button type="submit" form="checkoutForm" class="w-full bg-yellow-400 text-black py-4 rounded-xl font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all mt-6">
+              <i class="fas fa-check mr-2"></i>Konfirmasi Pesanan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS MODAL -->
+  <div id="successModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-zinc-900 rounded-3xl p-8 text-center max-w-md w-full transform scale-95 opacity-0 transition-all duration-300" id="successContent">
+        <div class="text-green-400 text-6xl mb-6">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h3 class="title-font text-2xl font-bold text-green-400 mb-4">Pesanan Berhasil!</h3>
+        <p class="text-zinc-300 mb-6">Terima kasih telah berbelanja di VELORA. Pesanan Anda sedang diproses.</p>
+        <button id="closeSuccess" class="bg-yellow-400 text-black px-8 py-3 rounded-xl font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all">
+          <i class="fas fa-home mr-2"></i>Kembali ke Beranda
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO SECTION -->
+  <section id="home" class="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
+    <video autoplay muted loop class="video-bg">
+      <source src="https://player.vimeo.com/external/370734959.sd.mp4?s=c90dcaba73c19d41d3a63c8b7d9f5b9d3b6c2b68&profile_id=165" type="video/mp4">
+    </video>
+    <div class="absolute inset-0 bg-black/50"></div>
+
+    <div class="relative z-10 max-w-7xl mx-auto text-center" data-aos="fade-up">
+      <p class="uppercase tracking-[6px] text-yellow-400 mb-4 text-sm font-semibold">
+        <i class="fas fa-sparkles mr-2"></i>Parfum Mewah
+      </p>
+
+      <h1 class="title-font text-5xl md:text-7xl font-bold leading-tight mb-6 glow-gold">
+        Temukan Aroma
+        <span class="text-yellow-400">Signature</span>
+        Anda
+      </h1>
+
+      <p class="text-zinc-300 leading-relaxed mb-8 max-w-2xl mx-auto text-lg">
+        Jelajahi koleksi parfum premium yang dirancang untuk kepercayaan diri, keanggunan, dan momen yang tak terlupakan.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#collection" class="bg-yellow-400 text-black px-8 py-4 rounded-full font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all inline-flex items-center">
+          <i class="fas fa-shopping-bag mr-2"></i>Jelajahi Sekarang
+        </a>
+
+        <a href="#bestseller" class="border border-yellow-400 text-yellow-400 px-8 py-4 rounded-full hover:bg-yellow-400 hover:text-black duration-300 transition-all inline-flex items-center">
+          <i class="fas fa-info-circle mr-2"></i>Pelajari Lebih Lanjut
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLECTION -->
+  <section id="collection" class="py-24 px-6 bg-zinc-950">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <p class="text-yellow-400 uppercase tracking-[4px] text-sm mb-3 font-semibold">
+          <i class="fas fa-collection mr-2"></i>Koleksi Kami
+        </p>
+        <h2 class="title-font text-4xl md:text-5xl font-bold">
+          Parfum Terpilih untuk Setiap Cerita
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- CARD 1 -->
+        <div class="glassmorphism rounded-3xl overflow-hidden hover:-translate-y-2 hover:glow-gold duration-500 transition-all group" data-aos="fade-up" data-aos-delay="100">
+          <div class="relative overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800&auto=format&fit=crop" class="h-72 w-full object-cover group-hover:scale-110 duration-500 transition-transform">
+            <div class="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">
+              <i class="fas fa-star mr-1"></i>Premium
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-semibold">Noir Essence</h3>
+              <span class="text-yellow-400 font-bold text-xl">Rp 89.000</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+              Aroma kayu gelap yang elegan dengan sentuhan maskulin yang kuat.
+            </p>
+            <button class="add-to-cart w-full bg-yellow-400 text-black py-3 rounded-full font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all"
+                    data-id="1"
+                    data-name="Noir Essence"
+                    data-price="89000"
+                    data-image="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800&auto=format&fit=crop">
+              <i class="fas fa-cart-plus mr-2"></i>Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="glassmorphism rounded-3xl overflow-hidden hover:-translate-y-2 hover:glow-gold duration-500 transition-all group" data-aos="fade-up" data-aos-delay="200">
+          <div class="relative overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800&auto=format&fit=crop" class="h-72 w-full object-cover group-hover:scale-110 duration-500 transition-transform">
+            <div class="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">
+              <i class="fas fa-fire mr-1"></i>Populer
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-semibold">Golden Aura</h3>
+              <span class="text-yellow-400 font-bold text-xl">Rp 75.000</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+              Aroma citrus segar yang dipadukan dengan nuansa floral mewah.
+            </p>
+            <button class="add-to-cart w-full bg-yellow-400 text-black py-3 rounded-full font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all"
+                    data-id="2"
+                    data-name="Golden Aura"
+                    data-price="75000"
+                    data-image="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800&auto=format&fit=crop">
+              <i class="fas fa-cart-plus mr-2"></i>Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="glassmorphism rounded-3xl overflow-hidden hover:-translate-y-2 hover:glow-gold duration-500 transition-all group" data-aos="fade-up" data-aos-delay="300">
+          <div class="relative overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1615634262417-55f1cf5a4f7c?q=80&w=800&auto=format&fit=crop" class="h-72 w-full object-cover group-hover:scale-110 duration-500 transition-transform">
+            <div class="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">
+              <i class="fas fa-heart mr-1"></i>Favorit
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-semibold">Midnight Rose</h3>
+              <span class="text-yellow-400 font-bold text-xl">Rp 92.000</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+              Aroma mawar manis yang sempurna untuk momen malam romantis.
+            </p>
+            <button class="add-to-cart w-full bg-yellow-400 text-black py-3 rounded-full font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all"
+                    data-id="3"
+                    data-name="Midnight Rose"
+                    data-price="92000"
+                    data-image="https://images.unsplash.com/photo-1615634262417-55f1cf5a4f7c?q=80&w=800&auto=format&fit=crop">
+              <i class="fas fa-cart-plus mr-2"></i>Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="glassmorphism rounded-3xl overflow-hidden hover:-translate-y-2 hover:glow-gold duration-500 transition-all group" data-aos="fade-up" data-aos-delay="400">
+          <div class="relative overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1588405748880-12d1d2a59db9?q=80&w=800&auto=format&fit=crop" class="h-72 w-full object-cover group-hover:scale-110 duration-500 transition-transform">
+            <div class="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">
+              <i class="fas fa-star mr-1"></i>Premium
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-semibold">Ocean Breeze</h3>
+              <span class="text-yellow-400 font-bold text-xl">Rp 85.000</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+              Aroma laut segar dengan sentuhan citrus yang menyegarkan.
+            </p>
+            <button class="add-to-cart w-full bg-yellow-400 text-black py-3 rounded-full font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all"
+                    data-id="4"
+                    data-name="Ocean Breeze"
+                    data-price="85000"
+                    data-image="https://images.unsplash.com/photo-1588405748880-12d1d2a59db9?q=80&w=800&auto=format&fit=crop">
+              <i class="fas fa-cart-plus mr-2"></i>Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 5 -->
+        <div class="glassmorphism rounded-3xl overflow-hidden hover:-translate-y-2 hover:glow-gold duration-500 transition-all group" data-aos="fade-up" data-aos-delay="500">
+          <div class="relative overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800&auto=format&fit=crop" class="h-72 w-full object-cover group-hover:scale-110 duration-500 transition-transform">
+            <div class="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">
+              <i class="fas fa-fire mr-1"></i>Populer
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-semibold">Vanilla Dream</h3>
+              <span class="text-yellow-400 font-bold text-xl">Rp 78.000</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+              Aroma vanilla manis dengan sentuhan kayu yang hangat.
+            </p>
+            <button class="add-to-cart w-full bg-yellow-400 text-black py-3 rounded-full font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all"
+                    data-id="5"
+                    data-name="Vanilla Dream"
+                    data-price="78000"
+                    data-image="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800&auto=format&fit=crop">
+              <i class="fas fa-cart-plus mr-2"></i>Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+
+        <!-- CARD 6 -->
+        <div class="glassmorphism rounded-3xl overflow-hidden hover:-translate-y-2 hover:glow-gold duration-500 transition-all group" data-aos="fade-up" data-aos-delay="600">
+          <div class="relative overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800&auto=format&fit=crop" class="h-72 w-full object-cover group-hover:scale-110 duration-500 transition-transform">
+            <div class="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">
+              <i class="fas fa-heart mr-1"></i>Favorit
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-2xl font-semibold">Amber Nights</h3>
+              <span class="text-yellow-400 font-bold text-xl">Rp 95.000</span>
+            </div>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+              Aroma amber misterius dengan nuansa oriental yang eksotis.
+            </p>
+            <button class="add-to-cart w-full bg-yellow-400 text-black py-3 rounded-full font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all"
+                    data-id="6"
+                    data-name="Amber Nights"
+                    data-price="95000"
+                    data-image="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800&auto=format&fit=crop">
+              <i class="fas fa-cart-plus mr-2"></i>Tambah ke Keranjang
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEST SELLER -->
+  <section id="bestseller" class="py-24 px-6 bg-black">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <p class="text-yellow-400 uppercase tracking-[4px] text-sm mb-3 font-semibold">
+          <i class="fas fa-trophy mr-2"></i>Terlaris
+        </p>
+        <h2 class="title-font text-4xl md:text-5xl font-bold">
+          Pilihan Terbaik Pelanggan
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div data-aos="fade-right">
+          <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800&auto=format&fit=crop" class="rounded-[40px] shadow-2xl glow-gold" alt="Best Seller">
+        </div>
+        <div data-aos="fade-left">
+          <h3 class="title-font text-3xl font-bold mb-6">Luxury in Every Spray</h3>
+          <p class="text-zinc-400 leading-relaxed mb-8">
+            VELORA menciptakan parfum premium yang terinspirasi dari keanggunan, kepercayaan diri, dan kemewahan abadi.
+            Setiap aroma dirancang untuk meninggalkan kesan yang tak terlupakan.
+          </p>
+          <div class="grid grid-cols-2 gap-6">
+            <div class="glassmorphism p-6 rounded-3xl text-center">
+              <h4 class="text-4xl font-bold text-yellow-400 mb-2">10K+</h4>
+              <p class="text-zinc-400">Pelanggan Puas</p>
+            </div>
+            <div class="glassmorphism p-6 rounded-3xl text-center">
+              <h4 class="text-4xl font-bold text-yellow-400 mb-2">50+</h4>
+              <p class="text-zinc-400">Varian Mewah</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEW CAROUSEL -->
+  <section id="review" class="py-24 px-6 bg-zinc-950">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <p class="text-yellow-400 uppercase tracking-[4px] text-sm mb-3 font-semibold">
+          <i class="fas fa-comments mr-2"></i>Testimoni
+        </p>
+        <h2 class="title-font text-4xl md:text-5xl font-bold">
+          Apa Kata Pelanggan Kami
+        </h2>
+      </div>
+
+      <div class="carousel relative" data-aos="fade-up">
+        <div class="carousel-inner" id="reviewCarousel">
+          <!-- Dynamic reviews will be added here -->
+        </div>
+        <button id="prevBtn" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-yellow-400 text-black p-3 rounded-full hover:scale-110 duration-300">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button id="nextBtn" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-yellow-400 text-black p-3 rounded-full hover:scale-110 duration-300">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- ADD REVIEW FORM -->
+      <div class="mt-16 max-w-2xl mx-auto" data-aos="fade-up">
+        <div class="glassmorphism p-8 rounded-3xl">
+          <h3 class="title-font text-2xl font-bold mb-6 text-center">
+            <i class="fas fa-pen mr-2"></i>Berikan Ulasan Anda
+          </h3>
+          <form id="reviewForm" class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-2">
+                  <i class="fas fa-user mr-2"></i>Nama
+                </label>
+                <input type="text" id="reviewName" required class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:glow-gold transition-all">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-zinc-400 mb-2">
+                  <i class="fas fa-briefcase mr-2"></i>Pekerjaan
+                </label>
+                <input type="text" id="reviewJob" required class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:glow-gold transition-all">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-zinc-400 mb-2">
+                <i class="fas fa-bottle mr-2"></i>Pilih Parfum
+              </label>
+              <select id="reviewPerfume" required class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:border-yellow-400 focus:glow-gold transition-all">
+                <option value="">-- Pilih Parfum --</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-zinc-400 mb-2">
+                <i class="fas fa-star mr-2"></i>Rating
+              </label>
+              <div class="flex gap-2" id="ratingStars">
+                <!-- Interactive stars will be generated here -->
+              </div>
+              <input type="hidden" id="reviewRating" value="0">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-zinc-400 mb-2">
+                <i class="fas fa-comment mr-2"></i>Ulasan
+              </label>
+              <textarea id="reviewText" rows="4" required class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:glow-gold transition-all resize-none"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-yellow-400 text-black py-3 rounded-xl font-semibold hover:scale-105 hover:glow-gold duration-300 transition-all">
+              <i class="fas fa-paper-plane mr-2"></i>Kirim Ulasan
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-24 px-6 bg-black">
+    <div class="max-w-4xl mx-auto text-center">
+      <div data-aos="fade-up">
+        <p class="text-yellow-400 uppercase tracking-[4px] text-sm mb-3 font-semibold">
+          <i class="fas fa-envelope mr-2"></i>Kontak
+        </p>
+        <h2 class="title-font text-4xl md:text-5xl font-bold mb-6">
+          Tetap Terhubung
+        </h2>
+        <p class="text-zinc-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+          Ikuti koleksi parfum terbaru kami dan aroma mewah eksklusif.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-6" data-aos="fade-up" data-aos-delay="200">
+        <a href="#" class="glassmorphism px-8 py-4 rounded-full hover:bg-yellow-400 hover:text-black hover:scale-110 duration-300 transition-all inline-flex items-center">
+          <i class="fab fa-instagram mr-3 text-xl"></i>Instagram
+        </a>
+        <a href="#" class="glassmorphism px-8 py-4 rounded-full hover:bg-yellow-400 hover:text-black hover:scale-110 duration-300 transition-all inline-flex items-center">
+          <i class="fab fa-tiktok mr-3 text-xl"></i>TikTok
+        </a>
+        <a href="#" class="glassmorphism px-8 py-4 rounded-full hover:bg-yellow-400 hover:text-black hover:scale-110 duration-300 transition-all inline-flex items-center">
+          <i class="fab fa-whatsapp mr-3 text-xl"></i>WhatsApp
+        </a>
+        <a href="#" class="glassmorphism px-8 py-4 rounded-full hover:bg-yellow-400 hover:text-black hover:scale-110 duration-300 transition-all inline-flex items-center">
+          <i class="fab fa-facebook mr-3 text-xl"></i>Facebook
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-zinc-800/50 py-12 bg-zinc-950">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="title-font text-xl font-bold text-yellow-400 mb-4">
+            <i class="fas fa-crown mr-2"></i>VELORA
+          </h3>
+          <p class="text-zinc-400 text-sm leading-relaxed">
+            Parfum mewah yang menginspirasi keanggunan dan kepercayaan diri.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4">Navigasi</h4>
+          <ul class="space-y-2 text-sm text-zinc-400">
+            <li><a href="#home" class="hover:text-yellow-400 transition-colors">Beranda</a></li>
+            <li><a href="#collection" class="hover:text-yellow-400 transition-colors">Koleksi</a></li>
+            <li><a href="#bestseller" class="hover:text-yellow-400 transition-colors">Terlaris</a></li>
+            <li><a href="#review" class="hover:text-yellow-400 transition-colors">Ulasan</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4">Bantuan</h4>
+          <ul class="space-y-2 text-sm text-zinc-400">
+            <li><a href="#" class="hover:text-yellow-400 transition-colors">FAQ</a></li>
+            <li><a href="#" class="hover:text-yellow-400 transition-colors">Pengiriman</a></li>
+            <li><a href="#" class="hover:text-yellow-400 transition-colors">Pengembalian</a></li>
+            <li><a href="#" class="hover:text-yellow-400 transition-colors">Kontak</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-4">Ikuti Kami</h4>
+          <div class="flex space-x-4">
+            <a href="#" class="text-zinc-400 hover:text-yellow-400 transition-colors text-xl">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-zinc-400 hover:text-yellow-400 transition-colors text-xl">
+              <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="text-zinc-400 hover:text-yellow-400 transition-colors text-xl">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-zinc-400 hover:text-yellow-400 transition-colors text-xl">
+              <i class="fab fa-tiktok"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-zinc-800 pt-8 text-center text-zinc-500 text-sm">
+        <p>© 2026 VELORA PERFUME. Semua Hak Dilindungi.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize AOS
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+
+    // Loading Screen
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loadingScreen').classList.add('hide');
+      }, 2000);
+    });
+
+    // Dark Mode Toggle
+    const darkBtn = document.getElementById('darkBtn');
+    darkBtn.addEventListener('click', () => {
+      if(document.body.classList.contains('bg-black')) {
+        document.body.classList.remove('bg-black', 'text-white');
+        document.body.classList.add('bg-white', 'text-black');
+        darkBtn.innerHTML = '<i class="fas fa-sun mr-2"></i>Mode Terang';
+        darkBtn.classList.remove('bg-yellow-400', 'text-black');
+        darkBtn.classList.add('bg-black', 'text-yellow-400');
+      } else {
+        document.body.classList.remove('bg-white', 'text-black');
+        document.body.classList.add('bg-black', 'text-white');
+        darkBtn.innerHTML = '<i class="fas fa-moon mr-2"></i>Mode Gelap';
+        darkBtn.classList.remove('bg-black', 'text-yellow-400');
+        darkBtn.classList.add('bg-yellow-400', 'text-black');
+      }
+    });
+
+    // Review Carousel
+    let currentSlide = 0;
+    const carousel = document.getElementById('reviewCarousel');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function updateCarousel() {
+      const slides = carousel.children;
+      if (slides.length > 0) {
+        carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+      }
+    }
+
+    prevBtn.addEventListener('click', () => {
+      const slides = carousel.children;
+      currentSlide = currentSlide > 0 ? currentSlide - 1 : slides.length - 1;
+      updateCarousel();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      const slides = carousel.children;
+      currentSlide = currentSlide < slides.length - 1 ? currentSlide + 1 : 0;
+      updateCarousel();
+    });
+
+    // Auto slide
+    setInterval(() => {
+      const slides = carousel.children;
+      if (slides.length > 1) {
+        currentSlide = currentSlide < slides.length - 1 ? currentSlide + 1 : 0;
+        updateCarousel();
+      }
+    }, 5000);
+
+    // REVIEW FEATURES - Perfume Products Array
+    const perfumeProducts = [
+      { id: '1', name: 'Noir Essence', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800&auto=format&fit=crop', price: 89000 },
+      { id: '2', name: 'Golden Aura', image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800&auto=format&fit=crop', price: 75000 },
+      { id: '3', name: 'Midnight Rose', image: 'https://images.unsplash.com/photo-1615634262417-55f1cf5a4f7c?q=80&w=800&auto=format&fit=crop', price: 92000 },
+      { id: '4', name: 'Ocean Breeze', image: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59db9?q=80&w=800&auto=format&fit=crop', price: 85000 },
+      { id: '5', name: 'Vanilla Dream', image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800&auto=format&fit=crop', price: 78000 },
+      { id: '6', name: 'Amber Nights', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800&auto=format&fit=crop', price: 95000 }
+    ];
+
+    // Load reviews from localStorage
+    let reviews = JSON.parse(localStorage.getItem('veloraReviews')) || [];
+
+    // Populate perfume dropdown
+    function populatePerfumeDropdown() {
+      const perfumeSelect = document.getElementById('reviewPerfume');
+      perfumeProducts.forEach(perfume => {
+        const option = document.createElement('option');
+        option.value = perfume.id;
+        option.textContent = perfume.name;
+        option.dataset.name = perfume.name;
+        option.dataset.image = perfume.image;
+        perfumeSelect.appendChild(option);
+      });
+    }
+
+    populatePerfumeDropdown();
+
+    // Generate interactive star rating
+    function generateStarRating() {
+      const ratingStars = document.getElementById('ratingStars');
+      ratingStars.innerHTML = '';
+      
+      for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('button');
+        star.type = 'button';
+        star.className = 'text-3xl star-btn hover:scale-110 transition-all duration-200 cursor-pointer';
+        star.textContent = '★';
+        star.style.color = '#a3a3a3';
+        star.dataset.rating = i;
+        
+        star.addEventListener('click', (e) => {
+          e.preventDefault();
+          const rating = parseInt(star.dataset.rating);
+          document.getElementById('reviewRating').value = rating;
+          updateStarDisplay(rating);
+        });
+
+        star.addEventListener('mouseenter', (e) => {
+          const hoverRating = parseInt(star.dataset.rating);
+          document.querySelectorAll('.star-btn').forEach((s, idx) => {
+            if (idx < hoverRating) {
+              s.style.color = '#fbbf24';
+              s.style.textShadow = '0 0 10px rgba(251, 191, 36, 0.5)';
+            } else {
+              s.style.color = '#a3a3a3';
+              s.style.textShadow = 'none';
+            }
+          });
+        });
+
+        ratingStars.appendChild(star);
+      }
+
+      ratingStars.addEventListener('mouseleave', () => {
+        updateStarDisplay(parseInt(document.getElementById('reviewRating').value));
+      });
+    }
+
+    function updateStarDisplay(rating) {
+      document.querySelectorAll('.star-btn').forEach((star, idx) => {
+        if (idx < rating) {
+          star.style.color = '#fbbf24';
+          star.style.textShadow = '0 0 10px rgba(251, 191, 36, 0.5)';
+        } else {
+          star.style.color = '#a3a3a3';
+          star.style.textShadow = 'none';
+        }
+      });
+    }
+
+    generateStarRating();
+
+    // Display saved reviews on page load
+    function displaySavedReviews() {
+      reviews.forEach(review => {
+        addReviewToCarousel(review);
+      });
+    }
+
+    displaySavedReviews();
+
+    // Review Form Handler
+    const reviewForm = document.getElementById('reviewForm');
+
+    reviewForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('reviewName').value;
+      const job = document.getElementById('reviewJob').value;
+      const perfumeId = document.getElementById('reviewPerfume').value;
+      const rating = parseInt(document.getElementById('reviewRating').value);
+      const text = document.getElementById('reviewText').value;
+
+      // Validasi parfum dipilih
+      if (!perfumeId || perfumeId === '') {
+        showValidationAlert('Silakan pilih parfum sebelum mengirim ulasan!');
+        return;
+      }
+
+      // Validasi rating dipilih
+      if (!rating || rating === 0) {
+        showValidationAlert('Silakan pilih rating bintang!');
+        return;
+      }
+
+      // Get selected perfume data
+      const selectedPerfume = perfumeProducts.find(p => p.id === perfumeId);
+
+      // Create review object
+      const review = {
+        id: Date.now(),
+        name: name,
+        job: job,
+        perfumeId: perfumeId,
+        perfumeName: selectedPerfume.name,
+        perfumeImage: selectedPerfume.image,
+        rating: rating,
+        text: text,
+        timestamp: new Date().toISOString()
+      };
+
+      // Add to reviews array
+      reviews.unshift(review);
+      
+      // Save to localStorage
+      localStorage.setItem('veloraReviews', JSON.stringify(reviews));
+
+      // Add to carousel
+      addReviewToCarousel(review);
+
+      // Reset form
+      reviewForm.reset();
+      document.getElementById('reviewRating').value = 0;
+      updateStarDisplay(0);
+
+      // Show success message
+      showSuccessMessage('Ulasan berhasil dikirim! Terima kasih atas reviews Anda.');
+    });
+
+    function addReviewToCarousel(review) {
+      // Generate stars
+      const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+
+      // Create new review element
+      const reviewElement = document.createElement('div');
+      reviewElement.className = 'carousel-item glassmorphism p-8 rounded-3xl hover:glow-gold duration-500 transition-all';
+      reviewElement.innerHTML = `
+        <div>
+          <!-- Perfume Badge and Stars -->
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <img src="${review.perfumeImage}" alt="${review.perfumeName}" class="w-12 h-12 rounded-lg object-cover glow-gold">
+              <span class="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">${review.perfumeName}</span>
+            </div>
+            <p class="text-yellow-400 text-lg">${stars}</p>
+          </div>
+          
+          <!-- Review Text -->
+          <p class="text-zinc-400 leading-relaxed mb-6 italic">"${review.text}"</p>
+          
+          <!-- Reviewer Info -->
+          <div class="flex items-center gap-4 pt-4 border-t border-zinc-700">
+            <img src="https://randomuser.me/api/portraits/lego/${Math.floor(Math.random() * 9)}.jpg" class="w-14 h-14 rounded-full object-cover">
+            <div>
+              <h4 class="font-semibold text-lg">${review.name}</h4>
+              <p class="text-zinc-500 text-sm">${review.job}</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      carousel.insertBefore(reviewElement, carousel.firstChild);
+      currentSlide = 0;
+      updateCarousel();
+    }
+
+    function showValidationAlert(message) {
+      const alert = document.createElement('div');
+      alert.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-md animate-bounce';
+      alert.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${message}`;
+      document.body.appendChild(alert);
+      setTimeout(() => alert.remove(), 4000);
+    }
+
+    function showSuccessMessage(message) {
+      const successMsg = document.createElement('div');
+      successMsg.className = 'fixed top-20 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+      successMsg.innerHTML = `<i class="fas fa-check mr-2"></i>${message}`;
+      document.body.appendChild(successMsg);
+
+      setTimeout(() => {
+        successMsg.classList.remove('translate-x-full');
+      }, 100);
+
+      setTimeout(() => {
+        successMsg.classList.add('translate-x-full');
+        setTimeout(() => successMsg.remove(), 300);
+      }, 3000);
+    }
+
+    // Smooth scroll for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Format Rupiah Function
+    function formatRupiah(amount) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(amount);
+    }
+
+    // CART FUNCTIONALITY
+    let cart = JSON.parse(localStorage.getItem('veloraCart')) || [];
+
+    // DOM Elements
+    const cartBtn = document.getElementById('cartBtn');
+    const cartModal = document.getElementById('cartModal');
+    const cartOverlay = document.getElementById('cartOverlay');
+    const cartSidebar = document.getElementById('cartSidebar');
+    const closeCart = document.getElementById('closeCart');
+    const cartItems = document.getElementById('cartItems');
+    const cartCount = document.getElementById('cartCount');
+    const cartTotal = document.getElementById('cartTotal');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+
+    // Checkout Elements
+    const checkoutModal = document.getElementById('checkoutModal');
+    const checkoutOverlay = document.getElementById('checkoutOverlay');
+    const checkoutContent = document.getElementById('checkoutContent');
+    const closeCheckout = document.getElementById('closeCheckout');
+    const checkoutForm = document.getElementById('checkoutForm');
+    const orderSummary = document.getElementById('orderSummary');
+    const orderTotal = document.getElementById('orderTotal');
+
+    // Success Modal
+    const successModal = document.getElementById('successModal');
+    const successContent = document.getElementById('successContent');
+    const closeSuccess = document.getElementById('closeSuccess');
+
+    // Initialize cart on page load
+    updateCartDisplay();
+    updateCartCount();
+
+    // Add to cart functionality
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const product = {
+          id: e.target.dataset.id,
+          name: e.target.dataset.name,
+          price: parseInt(e.target.dataset.price),
+          image: e.target.dataset.image,
+          quantity: 1
+        };
+
+        addToCart(product);
+
+        // Show success animation
+        showAddToCartSuccess();
+      });
+    });
+
+    function addToCart(product) {
+      const existingItem = cart.find(item => item.id === product.id);
+
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push(product);
+      }
+
+      saveCart();
+      updateCartDisplay();
+      updateCartCount();
+    }
+
+    function removeFromCart(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      saveCart();
+      updateCartDisplay();
+      updateCartCount();
+    }
+
+    function updateQuantity(productId, newQuantity) {
+      if (newQuantity <= 0) {
+        removeFromCart(productId);
+        return;
+      }
+
+      const item = cart.find(item => item.id === productId);
+      if (item) {
+        item.quantity = newQuantity;
+        saveCart();
+        updateCartDisplay();
+        updateCartCount();
+      }
+    }
+
+    function updateCartDisplay() {
+      cartItems.innerHTML = '';
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = `
+          <div class="text-center text-zinc-500 py-12">
+            <i class="fas fa-shopping-cart text-4xl mb-4"></i>
+            <p>Keranjang kosong</p>
+            <p class="text-sm">Tambahkan produk ke keranjang</p>
+          </div>
+        `;
+        cartTotal.textContent = formatRupiah(0);
+        checkoutBtn.disabled = true;
+        return;
+      }
+
+      let total = 0;
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        const cartItemElement = document.createElement('div');
+        cartItemElement.className = 'cart-item';
+        cartItemElement.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <div class="flex-1">
+            <h4 class="font-semibold text-sm">${item.name}</h4>
+            <p class="text-yellow-400 font-bold">${formatRupiah(item.price)}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="quantity-btn decrease-qty" data-id="${item.id}">
+              <i class="fas fa-minus"></i>
+            </button>
+            <span class="px-3 py-1 bg-zinc-700 rounded">${item.quantity}</span>
+            <button class="quantity-btn increase-qty" data-id="${item.id}">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <div class="text-right">
+            <p class="font-bold text-yellow-400">${formatRupiah(item.price * item.quantity)}</p>
+            <button class="text-red-400 hover:text-red-300 mt-1 remove-item" data-id="${item.id}">
+              <i class="fas fa-trash text-sm"></i>
+            </button>
+          </div>
+        `;
+
+        cartItems.appendChild(cartItemElement);
+      });
+
+      cartTotal.textContent = `${formatRupiah(total)}`;
+      checkoutBtn.disabled = false;
+
+      // Add event listeners for quantity buttons
+      document.querySelectorAll('.decrease-qty').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const productId = e.currentTarget.dataset.id;
+          const item = cart.find(item => item.id === productId);
+          if (item) {
+            updateQuantity(productId, item.quantity - 1);
+          }
+        });
+      });
+
+      document.querySelectorAll('.increase-qty').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const productId = e.currentTarget.dataset.id;
+          const item = cart.find(item => item.id === productId);
+          if (item) {
+            updateQuantity(productId, item.quantity + 1);
+          }
+        });
+      });
+
+      document.querySelectorAll('.remove-item').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const productId = e.currentTarget.dataset.id;
+          removeFromCart(productId);
+        });
+      });
+    }
+
+    function updateCartCount() {
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartCount.textContent = totalItems;
+
+      if (totalItems === 0) {
+        cartCount.classList.add('hidden');
+      } else {
+        cartCount.classList.remove('hidden');
+      }
+    }
+
+    function saveCart() {
+      localStorage.setItem('veloraCart', JSON.stringify(cart));
+    }
+
+    function showAddToCartSuccess() {
+      const successMsg = document.createElement('div');
+      successMsg.className = 'fixed top-20 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300';
+      successMsg.innerHTML = '<i class="fas fa-check mr-2"></i>Produk ditambahkan ke keranjang!';
+      document.body.appendChild(successMsg);
+
+      setTimeout(() => {
+        successMsg.classList.remove('translate-x-full');
+      }, 100);
+
+      setTimeout(() => {
+        successMsg.classList.add('translate-x-full');
+        setTimeout(() => successMsg.remove(), 300);
+      }, 3000);
+    }
+
+    // Cart Modal Controls
+    cartBtn.addEventListener('click', () => {
+      cartModal.classList.remove('hidden');
+      document.body.classList.add('cart-modal-open');
+    });
+
+    function closeCartModal() {
+      document.body.classList.remove('cart-modal-open');
+      setTimeout(() => {
+        cartModal.classList.add('hidden');
+      }, 500);
+    }
+
+    cartOverlay.addEventListener('click', closeCartModal);
+    closeCart.addEventListener('click', closeCartModal);
+
+    // Checkout Modal Controls
+    checkoutBtn.addEventListener('click', () => {
+      updateOrderSummary();
+      cartModal.classList.add('hidden');
+      document.body.classList.remove('cart-modal-open');
+      checkoutModal.classList.remove('hidden');
+      document.body.classList.add('checkout-modal-open');
+    });
+
+    function closeCheckoutModal() {
+      document.body.classList.remove('checkout-modal-open');
+      setTimeout(() => {
+        checkoutModal.classList.add('hidden');
+      }, 300);
+    }
+
+    checkoutOverlay.addEventListener('click', closeCheckoutModal);
+    closeCheckout.addEventListener('click', closeCheckoutModal);
+
+    function updateOrderSummary() {
+      orderSummary.innerHTML = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        const orderItem = document.createElement('div');
+        orderItem.className = 'flex justify-between items-center py-2 border-b border-zinc-700';
+        orderItem.innerHTML = `
+          <div class="flex items-center gap-3">
+            <img src="${item.image}" class="w-12 h-12 object-cover rounded">
+            <div>
+              <p class="font-semibold text-sm">${item.name}</p>
+              <p class="text-zinc-400 text-xs">${item.quantity}x ${formatRupiah(item.price)}</p>
+            </div>
+          </div>
+          <span class="font-bold text-yellow-400">${formatRupiah(itemTotal)}</span>
+        `;
+
+        orderSummary.appendChild(orderItem);
+      });
+
+      orderTotal.textContent = `${formatRupiah(total)}`;
+    }
+
+    // Checkout Form Handler
+    checkoutForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Get form data
+      const formData = {
+        name: document.getElementById('checkoutName').value,
+        address: document.getElementById('checkoutAddress').value,
+        phone: document.getElementById('checkoutPhone').value,
+        payment: document.getElementById('checkoutPayment').value
+      };
+
+      // Here you would normally send data to server
+      console.log('Checkout data:', formData);
+      console.log('Cart items:', cart);
+
+      // Clear cart
+      cart = [];
+      saveCart();
+      updateCartCount();
+
+      // Close checkout modal
+      closeCheckoutModal();
+
+      // Show success modal
+      successModal.classList.remove('hidden');
+      document.body.classList.add('success-modal-open');
+    });
+
+    // Success Modal Controls
+    closeSuccess.addEventListener('click', () => {
+      document.body.classList.remove('success-modal-open');
+      setTimeout(() => {
+        successModal.classList.add('hidden');
+      }, 300);
+    });
+
+    // Close modals on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (!cartModal.classList.contains('hidden')) {
+          closeCartModal();
+        }
+        if (!checkoutModal.classList.contains('hidden')) {
+          closeCheckoutModal();
+        }
+        if (!successModal.classList.contains('hidden')) {
+          closeSuccess.addEventListener('click');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
